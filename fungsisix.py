@@ -2,8 +2,14 @@ import os
 import sys
 import time
 
+def wait(i):
+	time.sleep(i)
+
+def exitProgram():
+	sys.exit()
+
 def clearScreen():
-	os.system('cls') #change to 'cls' when using windows
+	os.system('cls') #change to 'clear' when using macOS or linux
 
 def clearLast():
 	sys.stdout.write('\x1b[1A')
@@ -15,14 +21,13 @@ def getIndex(akun, nim):
 def absensi(absen, sudah, hari, idx_dihari, idx_matkul, akun, nim, idx):
 	if(sudah[nim][hari][idx_dihari]):
 		print("Anda sudah absen di mata kuliah ini")
-		time.sleep(1)
+		wait(1)
 		absensiSimulasi(akun, nim, idx, absen, sudah)
 	sudah[nim][hari][idx_dihari] = True
 	absen[idx][idx_matkul] += 1
 	print("Absen berhasil dicatat!")
-	time.sleep(1)
+	wait(1)
 	absensiSimulasi(akun, nim, idx, absen, sudah)
-
 
 def login():
 	print('''
@@ -33,18 +38,87 @@ Pilih menu:
 1. Login
 2. Daftar Akun
 3. Akun yang terdaftar
+0. Keluar Program
 			''')
 	pilih = int(input("Pilih nomor menu: "))
-	if(pilih < 1 or pilih > 3):
+	if(pilih < 0 or pilih > 3):
 		clearScreen()
 		print("Menu tidak terdaftar! Silahkan coba lagi")
 		pilih = login()
 	return(pilih)
 
+def loginAuthentication(akun):
+	success = False
+	nim = ''
+	pswd = ''
+	tries = 0
+	while(nim not in akun[0]):
+		nim = input("Masukan NIM akun INA: ")
+		if(nim not in akun[0]):
+			clearLast()
+			print("Tidak ada akun yang terdaftar dengan NIM tersebut. Coba lagi!")
 
+	idx = getIndex(akun, nim)
+	while(tries < 3):
+		tries += 1
+		pswd = input("Masukan password anda: ")
+		if(pswd == akun[2][idx]):
+			success = True
+			break
+		else:
+			clearLast()
+			print("Password salah!")
+	return(nim, idx, success)
+
+def loginInf(akun, nim, idx, absen, sudahAbsen):
+	print(idx)
+	pilihLogin = login()
+	if(pilihLogin == 0):
+		print("Dadah, sampai jumpa lagi! :D")
+		wait(5)
+		exitProgram()
+
+	if(pilihLogin == 1): # Login dengan akun INA
+		nim, idx, success = loginAuthentication(akun)
+		if(success):
+			print("Login berhasil!")
+			print("Selamat datang di SI-eks!")
+			wait(3)
+		try:
+			return(0)
+		finally:
+			SIX(akun, nim, idx, absen, sudahAbsen)
+
+	elif(pilihLogin == 2): # Add account
+		print("ADD ACCOUNT")
+		nama = input("Masukan nama anda: ")
+		nim_baru = input("Masukan NIM ada: ")
+		pswd_baru = input("Masukan password anda: ")
+		akun[0].append(nim_baru)
+		akun[1].append(nama)
+		akun[2].append(pswd_baru)
+		absen.append([0, 0, 0, 0, 0, 0])
+		sudahAbsen[nim_baru] = {"senin" : [False, False, False],
+    "selasa" : [False, False, False, False],
+    "kamis" : [False, False, False],
+    "jumat" : [False]}
+		print("\nAkun anda sudah dibuat!")
+		x = input("Tekan enter untuk kembali ke menu login")
+		loginInf(akun, nim, idx, absensi, sudahAbsen)
+
+	elif(pilihLogin == 3): # Print akun yang terdaftar
+		print("NIM\t\tPassword")
+		for i in range(len(akun[0])):
+			print("{}\t{}".format(akun[0][i], akun[2][i]))
+		x = input("Tekan enter untuk kembali ke menu login")
+		try:
+			return(0)
+		finally:
+			loginInf(akun, nim, idx, absen, sudahAbsen)
 
 def SIX(akun, nim, idx, absen, sudah):
 	clearScreen()
+
 	print('''
 Pilih menu :
 1. Status Mahasiswa
@@ -60,9 +134,10 @@ Pilih menu :
 	elif(pilihSIX == 3): # control panel
 		controlPanelSimulation(akun, nim, idx, absen, sudah)
 	else:
-		pass
-
-
+		try:
+			return(0)
+		finally:
+			loginInf(akun, nim, idx, absen, sudah)
 
 def statusMahasiswaSimulation(akun, nim, idx, absen, sudah):
 	print('''
@@ -80,15 +155,14 @@ No\tMata Kuliah\t\tKehadiran
 4\tBahasa Inggris\t\t{}%
 5\tPengKom\t\t\t{}%
 6\tMatematika IA\t\t{}%
-'''.format(round(absen[idx][0]*100/3, 2), round(absen[idx][1]*100/1, 2),
-round(absen[idx][2]*100/1, 2), round(absen[idx][3]*100/1, 2), 
-round(absen[idx][4]*100/2, 2), round(absen[idx][5]*100/3, 2)))
+'''.format(round(absen[idx][0]*100/3, 2), round(absen[idx][1]*100/1, 2), round(absen[idx][2]*100/1, 2), round(absen[idx][3]*100/1, 2), round(absen[idx][4]*100/2, 2), round(absen[idx][5]*100/3, 2)))
 
 	print("Tekan enter untuk kembali ke menu utama")
 	pilihStatusMhssw = input()
-	SIX(akun, nim, idx, absen, sudah)
-
-
+	try:
+		return(0)
+	finally:
+		SIX(akun, nim, idx, absen, sudah)
 
 def absensiSimulasi(akun, nim, idx, absen, sudah):
 	clearScreen()
@@ -103,7 +177,7 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 	pilihAbsen = int(input("Pilih nomor menu: "))
 	while(pilihAbsen>5 or pilihAbsen<0):
 		pilihAbsen = int(input("Menu tidak tersedia! Pilih nomor menu: "))
-		time.sleep(1)
+		wait(1)
 # SENIN
 	if(pilihAbsen==1):
 		print('''
@@ -158,7 +232,7 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 # RABU
 	elif(pilihAbsen==3):
 		print("Tidak ada absen di hari Rabu")
-		time.sleep(1)
+		wait(1)
 		absensiSimulasi(akun, nim, idx, absen, sudah)
 
 # KAMIS
@@ -197,17 +271,23 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 			if(pilihMatkul == 1):
 				absensi(absen, sudah, "jumat", 0, 2, akun, nim, idx)
 	else:
-		time.sleep(1)
-		SIX(akun, nim, idx, absen, sudah)
+		wait(1)
+		try:
+			return(0)
+		finally:
+			SIX(akun, nim, idx, absen, sudah)
 
 
 def controlPanelSimulation(akun, nim, idx, absen, sudah):
-    pilihCtrl = pilihControlPanel(nim,akun[2][idx])
-    if(pilihCtrl == 0):
-        SIX(akun, nim, idx, absen, sudah)
-    else:
-        gantiPass(nim, akun)
-        pilihControlPanel(nim,akun[2][idx])
+	pilihCtrl = pilihControlPanel(akun, nim, idx, absen, sudah)
+	if(pilihCtrl == 0):
+		try:
+			return(0)
+		finally:
+			SIX(akun, nim, idx, absen, sudah)
+	elif(pilihCtrl == 1):
+		gantiPass(akun, nim, idx, absen, sudah)
+		pilihControlPanel(akun, nim, idx, absen, sudah)
 
 def pilihControlPanel(akun, nim, idx, absen, sudah):
     clearScreen()
@@ -224,10 +304,12 @@ Pilih menu:
     if(pilihCtrl>1 or pilihCtrl<0):
         clearScreen()
         print("Menu tidak terdaftar! Silahkan coba lagi")
-        pilihCtrl = pilihControlPanel(nim, akun[2][idx])
+        pilihCtrl = pilihControlPanel(nim, akun[2][idx], idx, absen, sudah)
     return(pilihCtrl)
 
 def gantiPass(akun, nim, idx, absen, sudah):
-    newPass = input("Masukan password baru: ")
-    akun[2][idx] = newPass
-    print("Password berhasil diganti!")
+	newPass = input("Masukan password baru: ")
+	akun[2][idx] = newPass
+	print("Password berhasil diganti!")
+	x = input("Tekan enter untuk kembali")
+	controlPanelSimulation(akun, nim, idx, absen, sudah)

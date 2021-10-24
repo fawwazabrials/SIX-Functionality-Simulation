@@ -1,58 +1,44 @@
 import fungsisix as fs
-
-# background work
-akun = [
-    ["16521085", "16521095", "16521105", "16521115", "test"],
-    ["Austin Gabriel Pardosi", "Michael Leon Putra Widhi", "Muhamad Farhan Syakir", "Fawwaz Abrial Saffa", "admin"],
-    ["pass1", "pass2", "pass3", "pass4", "test"]
-]
-
-absensi = [
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0]
-]
-
-jadwal = {
-    "senin" : [False, False, False],
-    "selasa" : [False, False, False, False],
-    "kamis" : [False, False, False],
-    "jumat" : [False]
-}
-
-sudahAbsen = {
-    "16521085" : jadwal,
-    "16521095" : jadwal,
-    "16521105" : jadwal,
-    "16521115" : jadwal,
-    "test" : jadwal
-    }
+import init as var
+import time
+import sys
 
 # login screen
 pilihLogin = fs.login()
-if(pilihLogin == 1): #Login dengan akun INA
-    nim = ''
-    pswd = ''
-    tries = 0
+if(pilihLogin == 0):
+    print("Dadah, sampai jumpa lagi! :D")
+    fs.wait(5)
+    fs.exitProgram()
 
-    # Check ada akun terdaftar atau tidak
-    while(nim not in akun[0]):
-        nim = input("Masukan NIM akun INA: ")
-        if(nim not in akun[0]):
-            fs.clearLast()
-            print("Tidak ada akun yang terdaftar dengan NIM tersebut. Coba lagi!")
+if(pilihLogin == 1): # Login dengan akun INA
+    var.nim, var.idx, var.success = fs.loginAuthentication(var.akun)
+    if(var.success):
+        print("Login berhasil!")
+        print("Selamat datang di SI-eks!")
+        fs.wait(2)
+    fs.SIX(var.akun, var.nim, var.idx, var.absensi, var.sudahAbsen)
 
-    idx = fs.getIndex(akun, nim)
-    while(tries < 3):
-        tries += 1
-        pswd = input("Masukan password anda: ")
-        if(pswd != akun[2][idx]):
-            fs.clearLast()
-            print("Password salah!")
-        else:
-            print("Login berhasil!\n\n")
-            break
+elif(pilihLogin == 2): # Add account
+    print("ADD ACCOUNT")
+    nama = input("Masukan nama anda: ")
+    nim_baru = input("Masukan NIM ada: ")
+    pswd_baru = input("Masukan password anda: ")
+    var.akun[0].append(nim_baru)
+    var.akun[1].append(nama)
+    var.akun[2].append(pswd_baru)
+    var.absensi.append([0, 0, 0, 0, 0, 0])
+    var.sudahAbsen[nim_baru] = var.jadwal
+    print("\nAkun anda sudah dibuat!")
+    x = input("Tekan enter untuk kembali ke menu login")
+    fs.loginInf(var.akun, var.nim, var.idx, var.absensi, var.sudahAbsen)
 
-    fs.SIX(akun, nim, idx, absensi, sudahAbsen)
+
+elif(pilihLogin == 3): # Print akun yang terdaftar
+    print("NIM\t\tPassword")
+    for i in range(len(var.akun[0])):
+        print("{}\t{}".format(var.akun[0][i], var.akun[2][i]))
+    x = input("Tekan enter untuk kembali ke menu login")
+    fs.loginInf(var.akun, var.nim, var.idx, var.absensi, var.sudahAbsen)
+
+
+
