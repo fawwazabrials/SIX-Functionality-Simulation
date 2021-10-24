@@ -1,3 +1,13 @@
+# Program init
+# Spesifikasi program : intialisasi variabel-variabel yang akan digunakan
+# Kumpulan variabel-variabel yang akan dipanggil pada program lain 
+
+# KAMUS
+# akun, absensi : list
+# jadwal, sudahAbsen : dictionary
+# nim, idx : int
+# success : boolean
+
 akun = [
     ["16521085", "16521095", "16521105", "16521115"],
     ["Austin Gabriel Pardosi", "Michael Leon Putra Widhi", "Muhamad Farhan Syakir", "Fawwaz Abrial Saffa"],

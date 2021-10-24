@@ -1,24 +1,60 @@
+# Program fungsisix
+# Spesifikasi program : Kumpulan fungsi dan prosedur yang akan dipanggil pada program lain 
+
+# ALGORITMA
+# import module os, sys, dan time
 import os
 import sys
 import time
 
 def wait(i):
+	# Spesifikasi program : Menahan waktu dengan jumlah detik sesuai dengan argumen
+
+	# KAMUS LOKAL
+	# i : float
+
+	# ALGORITMA  
 	time.sleep(i)
 
 def exitProgram():
+	# Spesifikasi program : Keluar dari program
+
+	# ALGORITMA  
 	sys.exit()
 
 def clearScreen():
+	# Spesifikasi program : Menghapus semua output yang sudah di-print
+
+	# ALGORITMA  
 	os.system('cls') #change to 'clear' when using macOS or linux
 
 def clearLast():
+	# Spesifikasi program : Menghapus output yang di-print terakhir
+
+	# ALGORITMA  
 	sys.stdout.write('\x1b[1A')
 	sys.stdout.write('\x1b[2K')
 
 def getIndex(akun, nim):
+	# Spesifikasi program : Mendapatkan indeks NIM di dalam list akun
+
+	# KAMUS LOKAL
+	# akun : list
+	# nim : int
+
+	# ALGORITMA  
     return akun[0].index(nim)
 
 def absensi(absen, sudah, hari, idx_dihari, idx_matkul, akun, nim, idx):
+	# Spesifikasi program : Mencatat absen pada mata kuliah di hari tertentu
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudah : dictionary
+	# idx_dihari, idx_matkul, idx : int
+	# hari, nim : string
+
+	# ALGORITMA 
 	if(sudah[nim][hari][idx_dihari]):
 		print("Anda sudah absen di mata kuliah ini")
 		wait(1)
@@ -30,6 +66,12 @@ def absensi(absen, sudah, hari, idx_dihari, idx_matkul, akun, nim, idx):
 	absensiSimulasi(akun, nim, idx, absen, sudah)
 
 def login():
+	# Spesifikasi program : Memilih menu pada login
+
+	# KAMUS LOKAL
+	# pilih : int
+
+	# ALGORITMA 
 	print('''
 -------------------------------
 Selamat datang di SI-eks!
@@ -48,6 +90,15 @@ Pilih menu:
 	return(pilih)
 
 def loginAuthentication(akun):
+	# Spesifikasi program : Cek apabila kredensial login terdaftar dalam sistem
+
+	# KAMUS LOKAL
+	# akun : list
+	# success : boolean
+	# tries, idx : int
+	# nim, pswd : string
+
+	# ALGORITMA 
 	success = False
 	nim = ''
 	pswd = ''
@@ -71,6 +122,16 @@ def loginAuthentication(akun):
 	return(nim, idx, success)
 
 def loginInf(akun, nim, idx, absen, sudahAbsen):
+	# Spesifikasi program : Menyimulasikan sistem menu login SIX
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudahAbsen : dictionary
+	# idx, pilihLogin : int
+	# nim, nama, nim_baru, pswd_baru, x : string
+	# success : boolean
+
+	# ALGORITMA 
 	print(idx)
 	pilihLogin = login()
 	if(pilihLogin == 0):
@@ -99,9 +160,9 @@ def loginInf(akun, nim, idx, absen, sudahAbsen):
 		akun[2].append(pswd_baru)
 		absen.append([0, 0, 0, 0, 0, 0])
 		sudahAbsen[nim_baru] = {"senin" : [False, False, False],
-    "selasa" : [False, False, False, False],
-    "kamis" : [False, False, False],
-    "jumat" : [False]}
+								"selasa" : [False, False, False, False],
+								"kamis" : [False, False, False],
+								"jumat" : [False]}
 		print("\nAkun anda sudah dibuat!")
 		x = input("Tekan enter untuk kembali ke menu login")
 		loginInf(akun, nim, idx, absensi, sudahAbsen)
@@ -117,6 +178,15 @@ def loginInf(akun, nim, idx, absen, sudahAbsen):
 			loginInf(akun, nim, idx, absen, sudahAbsen)
 
 def SIX(akun, nim, idx, absen, sudah):
+	# Spesifikasi program : Menyimulasikan sistem menu utama SIX
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudah : dictionary
+	# idx, pilihSIX : int
+	# nim : string
+
+	# ALGORITMA 
 	clearScreen()
 
 	print('''
@@ -133,13 +203,22 @@ Pilih menu :
 		absensiSimulasi(akun, nim, idx, absen, sudah)
 	elif(pilihSIX == 3): # control panel
 		controlPanelSimulation(akun, nim, idx, absen, sudah)
-	else:
+	else: # back to login
 		try:
 			return(0)
 		finally:
 			loginInf(akun, nim, idx, absen, sudah)
 
 def statusMahasiswaSimulation(akun, nim, idx, absen, sudah):
+	# Spesifikasi program : Menyimulasikan sistem menu status mahasiswa (rekap absensi)
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudah : dictionary
+	# idx : int
+	# nim, x : string
+
+	# ALGORITMA 
 	print('''
 Data Mahasiswa
 Nama\t : {}
@@ -158,13 +237,22 @@ No\tMata Kuliah\t\tKehadiran
 '''.format(round(absen[idx][0]*100/3, 2), round(absen[idx][1]*100/1, 2), round(absen[idx][2]*100/1, 2), round(absen[idx][3]*100/1, 2), round(absen[idx][4]*100/2, 2), round(absen[idx][5]*100/3, 2)))
 
 	print("Tekan enter untuk kembali ke menu utama")
-	pilihStatusMhssw = input()
+	x = input()
 	try:
 		return(0)
 	finally:
 		SIX(akun, nim, idx, absen, sudah)
 
 def absensiSimulasi(akun, nim, idx, absen, sudah):
+	# Spesifikasi program : Memilih mata kuliah yang ingin di-Tandai Hadir
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudah : dictionary
+	# idx, pilihAbsen, pilihMatkul : int
+	# nim, x : string
+
+	# ALGORITMA 
 	clearScreen()
 	print('''
 1. Senin
@@ -279,6 +367,15 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 
 
 def controlPanelSimulation(akun, nim, idx, absen, sudah):
+	# Spesifikasi program : Menyimulasikan sistem menu status control panel (ubah password)
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudah : dictionary
+	# idx, pilihCtrl : int
+	# nim: string
+
+	# ALGORITMA 
 	pilihCtrl = pilihControlPanel(akun, nim, idx, absen, sudah)
 	if(pilihCtrl == 0):
 		try:
@@ -290,6 +387,15 @@ def controlPanelSimulation(akun, nim, idx, absen, sudah):
 		pilihControlPanel(akun, nim, idx, absen, sudah)
 
 def pilihControlPanel(akun, nim, idx, absen, sudah):
+	# Spesifikasi program : Memilih menu pada control panel
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudah : dictionary
+	# idx, pilihCtrl : int
+	# nim: string
+
+	# ALGORITMA 
     clearScreen()
     print('''
 AKUN INA
@@ -308,6 +414,15 @@ Pilih menu:
     return(pilihCtrl)
 
 def gantiPass(akun, nim, idx, absen, sudah):
+	# Spesifikasi program : Mengganti password INA
+
+	# KAMUS LOKAL
+	# akun : list
+	# absen, sudah : dictionary
+	# idx : int
+	# nim, newPass, x : string
+
+	# ALGORITMA 
 	newPass = input("Masukan password baru: ")
 	akun[2][idx] = newPass
 	print("Password berhasil diganti!")
