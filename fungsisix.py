@@ -7,6 +7,10 @@ import os
 import sys
 import time
 
+def goBackEnter():
+    x = input("Tekan enter untuk kembali")
+    return 0
+
 def wait(i):
 	# Spesifikasi program : Menahan waktu dengan jumlah detik sesuai dengan argumen
 
@@ -15,12 +19,6 @@ def wait(i):
 
 	# ALGORITMA  
 	time.sleep(i)
-
-def exitProgram():
-	# Spesifikasi program : Keluar dari program
-
-	# ALGORITMA  
-	sys.exit()
 
 def clearScreen():
 	# Spesifikasi program : Menghapus semua output yang sudah di-print
@@ -35,37 +33,7 @@ def clearLast():
 	sys.stdout.write('\x1b[1A')
 	sys.stdout.write('\x1b[2K')
 
-def getIndex(akun, nim):
-	# Spesifikasi program : Mendapatkan indeks NIM di dalam list akun
-
-	# KAMUS LOKAL
-	# akun : list
-	# nim : int
-
-	# ALGORITMA  
-    return akun[0].index(nim)
-
-def absensi(absen, sudah, hari, idx_dihari, idx_matkul, akun, nim, idx):
-	# Spesifikasi program : Mencatat absen pada mata kuliah di hari tertentu
-
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudah : dictionary
-	# idx_dihari, idx_matkul, idx : int
-	# hari, nim : string
-
-	# ALGORITMA 
-	if(sudah[nim][hari][idx_dihari]):
-		print("Anda sudah absen di mata kuliah ini")
-		wait(1)
-		absensiSimulasi(akun, nim, idx, absen, sudah)
-	sudah[nim][hari][idx_dihari] = True
-	absen[idx][idx_matkul] += 1
-	print("Absen berhasil dicatat!")
-	wait(1)
-	absensiSimulasi(akun, nim, idx, absen, sudah)
-
-def login():
+def pilihLogin():
 	# Spesifikasi program : Memilih menu pada login
 
 	# KAMUS LOKAL
@@ -82,159 +50,47 @@ Pilih menu:
 3. Akun yang terdaftar
 0. Keluar Program
 			''')
-	pilih = int(input("Pilih nomor menu: "))
-	if(pilih < 0 or pilih > 3):
+	pilih = input("Pilih nomor menu: ")
+	if(not(pilih.isnumeric()) or int(pilih) < 0 or int(pilih) > 3):
 		clearScreen()
 		print("Menu tidak terdaftar! Silahkan coba lagi")
-		pilih = login()
-	return(pilih)
+		pilih = pilihLogin()
+	return(int(pilih))
 
-def loginAuthentication(akun):
-	# Spesifikasi program : Cek apabila kredensial login terdaftar dalam sistem
-
-	# KAMUS LOKAL
-	# akun : list
-	# success : boolean
-	# tries, idx : int
-	# nim, pswd : string
-
-	# ALGORITMA 
-	success = False
-	nim = ''
-	pswd = ''
-	tries = 0
-	while(nim not in akun[0]):
-		nim = input("Masukan NIM akun INA: ")
-		if(nim not in akun[0]):
-			clearLast()
-			print("Tidak ada akun yang terdaftar dengan NIM tersebut. Coba lagi!")
-
-	idx = getIndex(akun, nim)
-	while(tries < 3):
-		tries += 1
-		pswd = input("Masukan password anda: ")
-		if(pswd == akun[2][idx]):
-			success = True
-			break
-		else:
-			clearLast()
-			print("Password salah!")
-	return(nim, idx, success)
-
-def loginInf(akun, nim, idx, absen, sudahAbsen):
-	# Spesifikasi program : Menyimulasikan sistem menu login SIX
-
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudahAbsen : dictionary
-	# idx, pilihLogin : int
-	# nim, nama, nim_baru, pswd_baru, x : string
-	# success : boolean
-
-	# ALGORITMA 
-	print(idx)
-	pilihLogin = login()
-	if(pilihLogin == 0):
-		print("Dadah, sampai jumpa lagi! :D")
-		wait(5)
-		exitProgram()
-
-	if(pilihLogin == 1): # Login dengan akun INA
-		nim, idx, success = loginAuthentication(akun)
-		if(success):
-			print("Login berhasil!")
-			print("Selamat datang di SI-eks!")
-			wait(3)
-			try:
-				return(0)
-			finally:
-				SIX(akun, nim, idx, absen, sudahAbsen)
-		else:
-			if(success):
-				print("Login berhasil!")
-				print("Selamat datang di SI-eks!")
-				wait(2)
-				SIX(akun, nim, idx, absen, sudahAbsen)
-			else:
-				print("Jika lupa password silahkan hubungi DitSTI")
-				loginInf(akun, nim, idx, absen, sudahAbsen)
-
-	elif(pilihLogin == 2): # Add account
-		print("ADD ACCOUNT")
-		nama = input("Masukan nama anda: ")
-		nim_baru = input("Masukan NIM ada: ")
-		pswd_baru = input("Masukan password anda: ")
-		akun[0].append(nim_baru)
-		akun[1].append(nama)
-		akun[2].append(pswd_baru)
-		absen.append([0, 0, 0, 0, 0, 0])
-		sudahAbsen[nim_baru] = {"senin" : [False, False, False],
-								"selasa" : [False, False, False, False],
-								"kamis" : [False, False, False],
-								"jumat" : [False]}
-		print("\nAkun anda sudah dibuat!")
-		x = input("Tekan enter untuk kembali ke menu login")
-		loginInf(akun, nim, idx, absen, sudahAbsen)
-
-	elif(pilihLogin == 3): # Print akun yang terdaftar
-		print("NIM\t\tPassword")
-		for i in range(len(akun[0])):
-			print("{}\t{}".format(akun[0][i], akun[2][i]))
-		x = input("Tekan enter untuk kembali ke menu login")
-		try:
-			return(0)
-		finally:
-			loginInf(akun, nim, idx, absen, sudahAbsen)
-
-def SIX(akun, nim, idx, absen, sudah):
-	# Spesifikasi program : Menyimulasikan sistem menu utama SIX
-
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudah : dictionary
-	# idx, pilihSIX : int
-	# nim : string
-
-	# ALGORITMA 
-	clearScreen()
-
-	print('''
+def pilihSIX():
+    print('''
 Pilih menu :
 1. Status Mahasiswa
 2. Kelas
 3. Control Panel
 0. Sign out
 			''')
-	pilihSIX = int(input("Pilih nomor menu: "))
-	if(pilihSIX == 1): # status mahasiswa
-		statusMahasiswaSimulation(akun, nim, idx, absen, sudah)
-	elif(pilihSIX == 2): # absen / kelas
-		absensiSimulasi(akun, nim, idx, absen, sudah)
-	elif(pilihSIX == 3): # control panel
-		controlPanelSimulation(akun, nim, idx, absen, sudah)
-	else: # back to login
-		try:
-			return(0)
-		finally:
-			loginInf(akun, nim, idx, absen, sudah)
+    pilih = input("Pilih nomor menu: ")
+    if(not(pilih.isnumeric()) or int(pilih) < 0 or int(pilih) > 3):
+        clearScreen()
+        print("Menu tidak terdaftar! Silahkan coba lagi")
+        pilih = pilihLogin()
+    return(int(pilih))
 
-def statusMahasiswaSimulation(akun, nim, idx, absen, sudah):
-	# Spesifikasi program : Menyimulasikan sistem menu status mahasiswa (rekap absensi)
+def SIX(akun, sudah, absen, idx):
+    pilih = 100
+    while(pilih != 0):
+        pilih = pilihSIX()
+        if(pilih == 1):
+            statusMahasiswa(akun, absen, idx)
+        elif(pilih == 2):
+            kelas(sudah, absen, akun, idx)
+        elif(pilih == 3):
+            controlPanel(akun, idx)
 
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudah : dictionary
-	# idx : int
-	# nim, x : string
-
-	# ALGORITMA 
-	print('''
+def statusMahasiswa(akun, absen, idx):
+    print('''
 Data Mahasiswa
 Nama\t : {}
 NIM\t : {}
 '''.format(akun[1][idx], akun[0][idx]))
 
-	print('''
+    print('''
 Rekap Absensi Semester 1	
 No\tMata Kuliah\t\tKehadiran
 1\tFisika Dasar IA\t\t{}%
@@ -245,25 +101,11 @@ No\tMata Kuliah\t\tKehadiran
 6\tMatematika IA\t\t{}%
 '''.format(round(absen[idx][0]*100/3, 2), round(absen[idx][1]*100/1, 2), round(absen[idx][2]*100/1, 2), round(absen[idx][3]*100/1, 2), round(absen[idx][4]*100/2, 2), round(absen[idx][5]*100/3, 2)))
 
-	print("Tekan enter untuk kembali ke menu utama")
-	x = input()
-	try:
-		return(0)
-	finally:
-		SIX(akun, nim, idx, absen, sudah)
+    print("Tekan enter untuk kembali ke menu utama")
+    goBackEnter()
 
-def absensiSimulasi(akun, nim, idx, absen, sudah):
-	# Spesifikasi program : Memilih mata kuliah yang ingin di-Tandai Hadir
-
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudah : dictionary
-	# idx, pilihAbsen, pilihMatkul : int
-	# nim, x : string
-
-	# ALGORITMA 
-	clearScreen()
-	print('''
+def pilihKelasHari():
+    print('''
 1. Senin
 2. Selasa
 3. Rabu
@@ -271,153 +113,132 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 5. Jumat
 0. Go back
 	''')
-	pilihAbsen = input("Pilih nomor menu: ")
-	while(not(pilihAbsen.isnumeric()) or int(pilihAbsen)>5 or int(pilihAbsen)<0):
-			pilihAbsen = input("Menu tidak tersedia! Pilih nomor menu: ")
-			wait(1)
-# SENIN
-	if(pilihAbsen=='1'):
-		print('''
-1. Fisika Dasar IA
-2. Matematika IA
-3. Pengenalan Komputasi
-	''')
-		try:
-			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
-		except ValueError:
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		if(pilihMatkul>3 or pilihMatkul<1):
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		else:
-			# senin - fisika
-			if(pilihMatkul == 1):
-				absensi(absen, sudah, "senin", 0, 0, akun, nim, idx)
+    pilihKelas = input("Pilih nomor menu: ")
+    if(not(pilihKelas.isnumeric()) or int(pilihKelas)>5 or int(pilihKelas)<0):
+        print("Menu tidak tersedia!")
+        pilihKelas = pilihKelas()
+    return(int(pilihKelas))
 
-			# senin - matematika
-			elif(pilihMatkul == 2):
-				absensi(absen, sudah, "senin", 1, 5, akun, nim, idx)
-
-			# senin - pengkom
-			elif(pilihMatkul == 3 and not(sudah[nim]["senin"][2])):
-				absensi(absen, sudah, "senin", 2, 4, akun, nim, idx)
-
-# SELASA
-	elif(pilihAbsen=='2'):
-		print('''
-1. Pengenalan Komputasi
-2. Matematika IA
-3. Fisika Dasar IA
-4. Olaharaga
-	''')
-		try:
-			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
-		except ValueError:
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		if(pilihMatkul>4 or pilihMatkul<1):
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		else:
-			# selasa - pengkom
-			if(pilihMatkul == 1):
-				absensi(absen, sudah, "selasa", 0, 4, akun, nim, idx)
-
-			# selasa - matematika
-			elif(pilihMatkul == 2):
-				absensi(absen, sudah, "selasa", 1, 5, akun, nim, idx)
-
-			# selasa - fisika
-			elif(pilihMatkul == 3):
-				absensi(absen, sudah, "selasa", 2, 0, akun, nim, idx)
-
-			# selasa - olahraga
-			elif(pilihMatkul == 4):
-				absensi(absen, sudah, "selasa", 3, 1, akun, nim, idx)
-
-# RABU
-	elif(pilihAbsen=='3'):
-		print("Tidak ada absen di hari Rabu")
-		wait(1)
-		absensiSimulasi(akun, nim, idx, absen, sudah)
-
-# KAMIS
-	elif(pilihAbsen=='4'):
-		print('''
-1. Fisika Dasar IA
-2. Matematika IA
-3. Bahasa Inggris
-	''')
-		try:
-			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
-		except ValueError:
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		if(pilihMatkul>3 or pilihMatkul<1):
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		else:
-			# kamis - fisika
-			if(pilihMatkul == 1):
-				absensi(absen, sudah, "kamis", 0, 0, akun, nim, idx)
-
-			# kamis - matematika
-			if(pilihMatkul == 2):
-				absensi(absen, sudah, "kamis", 1, 5, akun, nim, idx)
-
-			# kamis - bahasa inggris
-			if(pilihMatkul == 3):
-				absensi(absen, sudah, "kamis", 2, 3, akun, nim, idx)
-
-# JUMAT
-	elif(pilihAbsen=='5'):
-		print('''
-1. Tata Tulis Karya Ilmiah
-	''')
-		try:
-			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
-		except ValueError:
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		if(pilihMatkul>1 or pilihMatkul<1):
-			absensiSimulasi(akun, nim, idx, absen, sudah)
-		else:
-			# jumat - ttki
-			if(pilihMatkul == 1):
-				absensi(absen, sudah, "jumat", 0, 2, akun, nim, idx)
-	else:
-		wait(1)
-		try:
-			return(0)
-		finally:
-			SIX(akun, nim, idx, absen, sudah)
+def absensi(absen, sudah, akun, hari, idx_dihari, idx_matkul, idx):
+    nim = akun[0][idx]
+    if(sudah[nim][hari][idx_dihari]):
+        print("Anda sudah absen di mata kuliah ini")
+        wait(1)
+        clearScreen
+    else:
+        sudah[nim][hari][idx_dihari] = True
+        absen[idx][idx_matkul] += 1
+        print("Absen berhasil dicatat!")
+        wait(1)
 
 
-def controlPanelSimulation(akun, nim, idx, absen, sudah):
-	# Spesifikasi program : Menyimulasikan sistem menu status control panel (ubah password)
+def kelas(sudah, absen, akun, idx):
+    pilih = 100
+    while(pilih != 0):
+        pilih = pilihKelasHari()
+        if(pilih == 1):
+            print('''
+            1. Fisika Dasar IA
+            2. Matematika IA
+            3. Pengenalan Komputasi
+            ''')
+            try:
+                pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+            except ValueError:
+                pass
+            if(pilihMatkul>3 or pilihMatkul<1):
+                pass
+            else:
+                # senin - fisika
+                if(pilihMatkul == 1):
+                    absensi(absen, sudah, akun, "senin", 0, 0, idx)
 
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudah : dictionary
-	# idx, pilihCtrl : int
-	# nim: string
+                # senin - matematika
+                elif(pilihMatkul == 2):
+                    absensi(absen, sudah, akun, "senin", 1, 5, idx)
 
-	# ALGORITMA 
-	pilihCtrl = pilihControlPanel(akun, nim, idx, absen, sudah)
-	if(pilihCtrl == 0):
-		try:
-			return(0)
-		finally:
-			SIX(akun, nim, idx, absen, sudah)
-	elif(pilihCtrl == 1):
-		gantiPass(akun, nim, idx, absen, sudah)
-		pilihControlPanel(akun, nim, idx, absen, sudah)
+                # senin - pengkom
+                elif(pilihMatkul == 3):
+                    absensi(absen, sudah, akun, "senin", 2, 4, idx)
+            clearScreen()
 
-def pilihControlPanel(akun, nim, idx, absen, sudah):
-	# Spesifikasi program : Memilih menu pada control panel
+        elif(pilih == 2):
+            print('''
+            1. Pengenalan Komputasi
+            2. Matematika IA
+            3. Fisika Dasar IA
+            4. Olaharaga
+            ''')
+            try:
+                pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+            except ValueError:
+                pass
+            if(pilihMatkul>4 or pilihMatkul<1):
+                pass
+            else:
+                # selasa - pengkom
+                if(pilihMatkul == 1):
+                    absensi(absen, sudah, akun, "selasa", 0, 4, idx)
 
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudah : dictionary
-	# idx, pilihCtrl : int
-	# nim: string
+                # selasa - matematika
+                elif(pilihMatkul == 2):
+                    absensi(absen, sudah, akun, "selasa", 1, 5, idx)
 
-	# ALGORITMA 
-    clearScreen()
+                # selasa - fisika
+                elif(pilihMatkul == 3):
+                    absensi(absen, sudah, akun, "selasa", 2, 0, idx)
+
+                # selasa - olahraga
+                elif(pilihMatkul == 4):
+                    absensi(absen, sudah, akun, "selasa", 3, 1, idx)
+            clearScreen()
+
+        elif(pilih == 3):
+            print("Tidak ada kelas di hari Rabu")
+            wait(1)
+            clearScreen()
+    
+        elif(pilih == 4):
+            print('''
+            1. Fisika Dasar IA
+            2. Matematika IA
+            3. Bahasa Inggris
+            ''')
+            try:
+                pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+            except ValueError:
+                pass
+            if(pilihMatkul>3 or pilihMatkul<1):
+                pass
+            else:
+                # kamis - fisika
+                if(pilihMatkul == 1):
+                    absensi(absen, sudah, akun, "kamis", 0, 0, idx)
+
+                # kamis - matematika
+                if(pilihMatkul == 2):
+                    absensi(absen, sudah, akun, "kamis", 1, 5, idx)
+
+                # kamis - bahasa inggris
+                if(pilihMatkul == 3):
+                    absensi(absen, sudah, akun, "kamis", 2, 3, idx)
+
+        elif(pilih == 5):
+            print('''
+            1. Tata Tulis Karya Ilmiah
+            ''')
+            try:
+                pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+            except ValueError:
+                pass
+            if(pilihMatkul>1 or pilihMatkul<1):
+                pass
+            else:
+                # jumat - ttki
+                if(pilihMatkul == 1):
+                    absensi(absen, sudah, akun, "jumat", 0, 2, idx)
+
+def pilihControlPanel(akun, idx):
     print('''
 AKUN INA
 NIM\t: {}
@@ -426,26 +247,23 @@ Password\t: {}
 Pilih menu:
 1. Ganti password
 0. Go back
-			'''.format(nim, akun[2][idx]))
-    pilihCtrl = int(input("Pilih nomor menu: "))
-    if(pilihCtrl>1 or pilihCtrl<0):
+			'''.format(akun[0][idx], akun[2][idx]))
+    pilih = input("Pilih nomor menu: ")
+    if(not(pilih.isnumeric()) or int(pilih)>1 or int(pilih)<0):
         clearScreen()
         print("Menu tidak terdaftar! Silahkan coba lagi")
-        pilihCtrl = pilihControlPanel(nim, akun[2][idx], idx, absen, sudah)
-    return(pilihCtrl)
+        pilih = pilihControlPanel(akun, idx)
+    return(int(pilih))
 
-def gantiPass(akun, nim, idx, absen, sudah):
-	# Spesifikasi program : Mengganti password INA
-
-	# KAMUS LOKAL
-	# akun : list
-	# absen, sudah : dictionary
-	# idx : int
-	# nim, newPass, x : string
-
-	# ALGORITMA 
+def gantiPassword(akun, idx):
 	newPass = input("Masukan password baru: ")
 	akun[2][idx] = newPass
 	print("Password berhasil diganti!")
-	x = input("Tekan enter untuk kembali")
-	controlPanelSimulation(akun, nim, idx, absen, sudah)
+	goBackEnter()
+
+def controlPanel(akun, idx):
+    pilih = 100
+    while(pilih != 0):
+        pilih = pilihControlPanel(akun, idx)
+        if(pilih == 1):
+            gantiPassword(akun, idx)

@@ -28,7 +28,7 @@ jadwal = {
     "jumat" : [False]
 }
 
-sudahAbsen = {
+sudahAbsen= {
     "16521085" : {"senin" : [False, False, False],
     "selasa" : [False, False, False, False],
     "kamis" : [False, False, False],
@@ -46,7 +46,3 @@ sudahAbsen = {
     "kamis" : [False, False, False],
     "jumat" : [False]}
     }
-
-nim = 0
-idx = 0
-success = False
