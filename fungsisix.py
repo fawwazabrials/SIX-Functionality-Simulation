@@ -145,10 +145,19 @@ def loginInf(akun, nim, idx, absen, sudahAbsen):
 			print("Login berhasil!")
 			print("Selamat datang di SI-eks!")
 			wait(3)
-		try:
-			return(0)
-		finally:
-			SIX(akun, nim, idx, absen, sudahAbsen)
+			try:
+				return(0)
+			finally:
+				SIX(akun, nim, idx, absen, sudahAbsen)
+		else:
+			if(success):
+				print("Login berhasil!")
+				print("Selamat datang di SI-eks!")
+				wait(2)
+				SIX(akun, nim, idx, absen, sudahAbsen)
+			else:
+				print("Jika lupa password silahkan hubungi DitSTI")
+				loginInf(akun, nim, idx, absen, sudahAbsen)
 
 	elif(pilihLogin == 2): # Add account
 		print("ADD ACCOUNT")
@@ -165,7 +174,7 @@ def loginInf(akun, nim, idx, absen, sudahAbsen):
 								"jumat" : [False]}
 		print("\nAkun anda sudah dibuat!")
 		x = input("Tekan enter untuk kembali ke menu login")
-		loginInf(akun, nim, idx, absensi, sudahAbsen)
+		loginInf(akun, nim, idx, absen, sudahAbsen)
 
 	elif(pilihLogin == 3): # Print akun yang terdaftar
 		print("NIM\t\tPassword")
@@ -262,18 +271,21 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 5. Jumat
 0. Go back
 	''')
-	pilihAbsen = int(input("Pilih nomor menu: "))
-	while(pilihAbsen>5 or pilihAbsen<0):
-		pilihAbsen = int(input("Menu tidak tersedia! Pilih nomor menu: "))
-		wait(1)
+	pilihAbsen = input("Pilih nomor menu: ")
+	while(not(pilihAbsen.isnumeric()) or int(pilihAbsen)>5 or int(pilihAbsen)<0):
+			pilihAbsen = input("Menu tidak tersedia! Pilih nomor menu: ")
+			wait(1)
 # SENIN
-	if(pilihAbsen==1):
+	if(pilihAbsen=='1'):
 		print('''
 1. Fisika Dasar IA
 2. Matematika IA
 3. Pengenalan Komputasi
 	''')
-		pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		try:
+			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		except ValueError:
+			absensiSimulasi(akun, nim, idx, absen, sudah)
 		if(pilihMatkul>3 or pilihMatkul<1):
 			absensiSimulasi(akun, nim, idx, absen, sudah)
 		else:
@@ -290,14 +302,17 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 				absensi(absen, sudah, "senin", 2, 4, akun, nim, idx)
 
 # SELASA
-	elif(pilihAbsen==2):
+	elif(pilihAbsen=='2'):
 		print('''
 1. Pengenalan Komputasi
 2. Matematika IA
 3. Fisika Dasar IA
 4. Olaharaga
 	''')
-		pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		try:
+			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		except ValueError:
+			absensiSimulasi(akun, nim, idx, absen, sudah)
 		if(pilihMatkul>4 or pilihMatkul<1):
 			absensiSimulasi(akun, nim, idx, absen, sudah)
 		else:
@@ -318,19 +333,22 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 				absensi(absen, sudah, "selasa", 3, 1, akun, nim, idx)
 
 # RABU
-	elif(pilihAbsen==3):
+	elif(pilihAbsen=='3'):
 		print("Tidak ada absen di hari Rabu")
 		wait(1)
 		absensiSimulasi(akun, nim, idx, absen, sudah)
 
 # KAMIS
-	elif(pilihAbsen==4):
+	elif(pilihAbsen=='4'):
 		print('''
 1. Fisika Dasar IA
 2. Matematika IA
 3. Bahasa Inggris
 	''')
-		pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		try:
+			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		except ValueError:
+			absensiSimulasi(akun, nim, idx, absen, sudah)
 		if(pilihMatkul>3 or pilihMatkul<1):
 			absensiSimulasi(akun, nim, idx, absen, sudah)
 		else:
@@ -347,11 +365,14 @@ def absensiSimulasi(akun, nim, idx, absen, sudah):
 				absensi(absen, sudah, "kamis", 2, 3, akun, nim, idx)
 
 # JUMAT
-	elif(pilihAbsen==5):
+	elif(pilihAbsen=='5'):
 		print('''
 1. Tata Tulis Karya Ilmiah
 	''')
-		pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		try:
+			pilihMatkul = int(input("Pilih nomor mata kuliah: "))
+		except ValueError:
+			absensiSimulasi(akun, nim, idx, absen, sudah)
 		if(pilihMatkul>1 or pilihMatkul<1):
 			absensiSimulasi(akun, nim, idx, absen, sudah)
 		else:
