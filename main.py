@@ -24,7 +24,10 @@ if(pilihLogin == 1): # Login dengan akun INA
         print("Login berhasil!")
         print("Selamat datang di SI-eks!")
         fs.wait(2)
-    fs.SIX(var.akun, var.nim, var.idx, var.absensi, var.sudahAbsen)
+        fs.SIX(var.akun, var.nim, var.idx, var.absensi, var.sudahAbsen)
+    else:
+        print("Jika lupa password silahkan hubungi DitSTI")
+        fs.loginInf(var.akun, var.nim, var.idx, var.absensi, var.sudahAbsen)
 
 elif(pilihLogin == 2): # Add account
     print("ADD ACCOUNT")
