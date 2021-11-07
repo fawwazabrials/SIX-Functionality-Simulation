@@ -7,7 +7,7 @@
 # pilihLogin : int
 
 # ALGORITMA
-# import fungsi, prosedur, dan variabel buatan dari file fungsisix.py dan variables.py
+# import fungsi, prosedur, dan variabel buatan dari file fungsisix.py dan variables.pys
 import fungsisix as fs
 import variables as var
 
@@ -15,8 +15,8 @@ pilihLogin = 100
 while(pilihLogin != 0):
     fs.clearScreen()
     pilihLogin = fs.pilihLogin()
-    if(pilihLogin == 1):
-        nim = " "
+    if(pilihLogin == 1): # login
+        nim = ""
         password = ""
         success = False
         tries = 0
@@ -36,10 +36,14 @@ while(pilihLogin != 0):
             fs.clearLast()
             print("Password salah!")
 
-        if(success): fs.SIX(var.akun, var.sudahAbsen, var.absensi, idx)
+        if(success): 
+            print("\nBerhasil Login!")
+            fs.wait(1.5)
+            fs.clearScreen()
+            fs.SIX(var.akun, var.sudahAbsen, var.absensi, idx)
         else: print("Jika lupa password silahkan hubungi DitSTI")
 
-    elif(pilihLogin == 2):
+    elif(pilihLogin == 2): 
         print("ADD ACCOUNT")
         nama = input("Masukan nama anda: ")
         nim_baru = input("Masukan NIM ada: ")
@@ -54,12 +58,14 @@ while(pilihLogin != 0):
                                     "jumat" : [False]}
         print("\nAkun anda sudah dibuat!")
         fs.goBackEnter()
+        fs.clearScreen()
 
-    elif(pilihLogin == 3):
+    elif(pilihLogin == 3): # tunjukin akun
         print("NIM\tPassword")
         for i in range(len(var.akun[0])):
             print("{}\t{}".format(var.akun[0][i], var.akun[2][i]))
         fs.goBackEnter()
+        fs.clearScreen()
 
 # exit program
 print("Dadah, sampai jumpa lagi! :D")

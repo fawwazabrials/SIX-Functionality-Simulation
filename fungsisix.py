@@ -69,7 +69,7 @@ Pilih menu :
     if(not(pilih.isnumeric()) or int(pilih) < 0 or int(pilih) > 3):
         clearScreen()
         print("Menu tidak terdaftar! Silahkan coba lagi")
-        pilih = pilihLogin()
+        pilih = pilihSIX()
     return(int(pilih))
 
 def SIX(akun, sudah, absen, idx):
@@ -101,8 +101,8 @@ No\tMata Kuliah\t\tKehadiran
 6\tMatematika IA\t\t{}%
 '''.format(round(absen[idx][0]*100/3, 2), round(absen[idx][1]*100/1, 2), round(absen[idx][2]*100/1, 2), round(absen[idx][3]*100/1, 2), round(absen[idx][4]*100/2, 2), round(absen[idx][5]*100/3, 2)))
 
-    print("Tekan enter untuk kembali ke menu utama")
     goBackEnter()
+    clearScreen()
 
 def pilihKelasHari():
     print('''
@@ -115,6 +115,7 @@ def pilihKelasHari():
 	''')
     pilihKelas = input("Pilih nomor menu: ")
     if(not(pilihKelas.isnumeric()) or int(pilihKelas)>5 or int(pilihKelas)<0):
+        clearScreen()
         print("Menu tidak tersedia!")
         pilihKelas = pilihKelas()
     return(int(pilihKelas))
@@ -124,13 +125,13 @@ def absensi(absen, sudah, akun, hari, idx_dihari, idx_matkul, idx):
     if(sudah[nim][hari][idx_dihari]):
         print("Anda sudah absen di mata kuliah ini")
         wait(1)
-        clearScreen
+        clearScreen()
     else:
         sudah[nim][hari][idx_dihari] = True
         absen[idx][idx_matkul] += 1
         print("Absen berhasil dicatat!")
         wait(1)
-
+        clearScreen()
 
 def kelas(sudah, absen, akun, idx):
     pilih = 100
@@ -138,9 +139,9 @@ def kelas(sudah, absen, akun, idx):
         pilih = pilihKelasHari()
         if(pilih == 1):
             print('''
-            1. Fisika Dasar IA
-            2. Matematika IA
-            3. Pengenalan Komputasi
+1. Fisika Dasar IA
+2. Matematika IA
+3. Pengenalan Komputasi
             ''')
             try:
                 pilihMatkul = int(input("Pilih nomor mata kuliah: "))
@@ -164,10 +165,10 @@ def kelas(sudah, absen, akun, idx):
 
         elif(pilih == 2):
             print('''
-            1. Pengenalan Komputasi
-            2. Matematika IA
-            3. Fisika Dasar IA
-            4. Olaharaga
+1. Pengenalan Komputasi
+2. Matematika IA
+3. Fisika Dasar IA
+4. Olaharaga
             ''')
             try:
                 pilihMatkul = int(input("Pilih nomor mata kuliah: "))
@@ -200,9 +201,9 @@ def kelas(sudah, absen, akun, idx):
     
         elif(pilih == 4):
             print('''
-            1. Fisika Dasar IA
-            2. Matematika IA
-            3. Bahasa Inggris
+1. Fisika Dasar IA
+2. Matematika IA
+3. Bahasa Inggris
             ''')
             try:
                 pilihMatkul = int(input("Pilih nomor mata kuliah: "))
@@ -222,10 +223,11 @@ def kelas(sudah, absen, akun, idx):
                 # kamis - bahasa inggris
                 if(pilihMatkul == 3):
                     absensi(absen, sudah, akun, "kamis", 2, 3, idx)
+            clearScreen()
 
         elif(pilih == 5):
             print('''
-            1. Tata Tulis Karya Ilmiah
+1. Tata Tulis Karya Ilmiah
             ''')
             try:
                 pilihMatkul = int(input("Pilih nomor mata kuliah: "))
@@ -237,6 +239,7 @@ def kelas(sudah, absen, akun, idx):
                 # jumat - ttki
                 if(pilihMatkul == 1):
                     absensi(absen, sudah, akun, "jumat", 0, 2, idx)
+            clearScreen()
 
 def pilihControlPanel(akun, idx):
     print('''
@@ -256,10 +259,11 @@ Pilih menu:
     return(int(pilih))
 
 def gantiPassword(akun, idx):
-	newPass = input("Masukan password baru: ")
-	akun[2][idx] = newPass
-	print("Password berhasil diganti!")
-	goBackEnter()
+    newPass = input("Masukan password baru: ")
+    akun[2][idx] = newPass
+    print("Password berhasil diganti!")
+    goBackEnter()
+    clearScreen()
 
 def controlPanel(akun, idx):
     pilih = 100
